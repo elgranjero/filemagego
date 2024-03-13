@@ -1,0 +1,1505 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "FileMage Gateway",
+    "description": "FileMage Gateway provides a simple API to configure storage endpoints, users, and keys. Please note that all urls must end in a trailing slash, and the Content-Type header must be set to application/json.\n\n# Authentication\n\n<!-- ReDoc-Inject: <security-definitions> -->",
+    "version": "1.12.0"
+  },
+  "externalDocs": {
+    "description": "Find out more about FileMage Gateway",
+    "url": "https://docs.filemage.io"
+  },
+  "servers": [
+    {
+      "url": "https://filemage.ppfa.org:8443/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Endpoints",
+      "description": "Create and manage storage endpoints."
+    },
+    {
+      "name": "Users",
+      "description": "Create and manage user accounts."
+    },
+    {
+      "name": "Keys",
+      "description": "Create or remove user SSH keys."
+    },
+    {
+      "name": "Groups",
+      "description": "Create and manage user groups."
+    },
+    {
+      "name": "Permissions",
+      "description": "View folder permissions."
+    },
+    {
+      "name": "Audit",
+      "description": "View audit logs."
+    }
+  ],
+  "paths": {
+    "/endpoints/": {
+      "get": {
+        "tags": [
+          "Endpoints"
+        ],
+        "summary": "List endpoints",
+        "description": "Return a list of endpoint names and corresponding endpoint IDs.",
+        "operationId": "listEndpoints",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EndpointInfo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Endpoints"
+        ],
+        "summary": "Create endpoint",
+        "description": "Create a new endpoint using provided settings.",
+        "operationId": "createEndpoint",
+        "requestBody": {
+          "description": "Endpoint configuration. Check cloud provider specific schemas for config parameters.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/BlobEndpoint"
+                  },
+                  {
+                    "$ref": "#/components/schemas/S3Endpoint"
+                  },
+                  {
+                    "$ref": "#/components/schemas/GCSEndpoint"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EndpointCreated"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or invalid fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/endpoints/{id}/": {
+      "get": {
+        "tags": [
+          "Endpoints"
+        ],
+        "summary": "Get endpoint",
+        "description": "Return detailed endpoint settings of specified endpoint.",
+        "operationId": "getEndpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of endpoint to return",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/BlobEndpoint"
+                    },
+                    {
+                      "$ref": "#/components/schemas/S3Endpoint"
+                    },
+                    {
+                      "$ref": "#/components/schemas/GCSEndpoint"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Endpoint not found",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Endpoints"
+        ],
+        "summary": "Update endpoint",
+        "description": "Update settings of existing endpoint.",
+        "operationId": "updateEndpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of endpoint to update",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Endpoint configuration. Check cloud provider specific schemas for config parameters.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/BlobEndpoint"
+                  },
+                  {
+                    "$ref": "#/components/schemas/S3Endpoint"
+                  },
+                  {
+                    "$ref": "#/components/schemas/GCSEndpoint"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Success",
+            "content": {}
+          },
+          "400": {
+            "description": "Missing or invalid fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Endpoint not found",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      },
+      "delete": {
+        "tags": [
+          "Endpoints"
+        ],
+        "summary": "Delete endpoint",
+        "operationId": "deleteEndpoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of endpoint to delete",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful",
+            "content": {}
+          },
+          "404": {
+            "description": "Endpoint not found",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/users/": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "List users",
+        "description": "Return list of all active users.",
+        "operationId": "listUsers",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserInfo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create user",
+        "operationId": "creatUser",
+        "requestBody": {
+          "description": "User settings",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserId"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or invalid fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/users/{id}/": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user",
+        "description": "Return detailed user settings including SSH keys.",
+        "operationId": "getUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user to return",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Update user",
+        "description": "Update user settings not including keys. See `Keys` section for calls related to adding or removing keys.",
+        "operationId": "updateUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user to update",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "User configuration",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "successful operation",
+            "content": {}
+          },
+          "400": {
+            "description": "Missing or invalid fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found.",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete user",
+        "operationId": "deleteUser",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of user to delete",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {}
+          },
+          "404": {
+            "description": "User not found",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/users/{userId}/keys/": {
+      "post": {
+        "tags": [
+          "Keys"
+        ],
+        "summary": "Add key",
+        "description": "Create or import a SSH key. When importing use the `keyData` field. To create a new key set `create` to `true`",
+        "operationId": "createKey",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user to associate key with",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Key settings",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Key"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/x-pem-file": {
+                "schema": {
+                  "$ref": "#/components/schemas/KeyData"
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "Success",
+            "content": {}
+          },
+          "404": {
+            "description": "User not found",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/users/{userId}/keys/{keyId}/": {
+      "delete": {
+        "tags": [
+          "Keys"
+        ],
+        "summary": "Delete key",
+        "operationId": "deleteKey",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "ID of user to remove key from",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "keyId",
+            "in": "path",
+            "description": "ID of key to remove",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "successful operation",
+            "content": {}
+          },
+          "404": {
+            "description": "Key not found.",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/permissions/": {
+      "get": {
+        "tags": [
+          "Permissions"
+        ],
+        "summary": "Folder permissions overview",
+        "description": "List all paths with permissions applied.",
+        "operationId": "viewPermissions",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PermissionOverview"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/permissions/query/": {
+      "get": {
+        "tags": [
+          "Permissions"
+        ],
+        "summary": "Folder permission detail",
+        "description": "List all permissions granted on the specified path.",
+        "operationId": "detailPermissions",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "query",
+            "description": "Folder path to list permissions of.",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PermissionDetail"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/groups/": {
+      "get": {
+        "tags": [
+          "Groups"
+        ],
+        "summary": "List groups",
+        "description": "Return list of all active groups.",
+        "operationId": "listGroups",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GroupInfo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Groups"
+        ],
+        "summary": "Create group",
+        "operationId": "createGroup",
+        "requestBody": {
+          "description": "Group settings",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Group"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupCreated"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or invalid fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/groups/{id}/": {
+      "get": {
+        "tags": [
+          "Groups"
+        ],
+        "summary": "Get group",
+        "description": "Return group settings.",
+        "operationId": "getGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of group to return",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Group"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Group not found",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Groups"
+        ],
+        "summary": "Update group",
+        "description": "Update group settings",
+        "operationId": "updateGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of group to update",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "User configuration",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Group"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "successful operation",
+            "content": {}
+          },
+          "400": {
+            "description": "Missing or invalid fields",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Group not found.",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      },
+      "delete": {
+        "tags": [
+          "Groups"
+        ],
+        "summary": "Delete group",
+        "operationId": "deleteGroup",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of group to delete",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {}
+          },
+          "404": {
+            "description": "group not found",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/logs/": {
+      "get": {
+        "tags": [
+          "Audit"
+        ],
+        "summary": "Get audit log entries",
+        "description": "Return list of all audit log entries filtered by given parameters. Note that each request will return a maximum of 10,000 entries and no pagination is currently available. If necessary, you must filter by a shorted time span.",
+        "operationId": "listLogs",
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "description": "RFC 3339 timestamp of first event to return.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end",
+            "in": "query",
+            "description": "RFC 3339 timestamp of last event to return.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "description": "Show only events for the object at this path.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "operation",
+            "in": "query",
+            "description": "The operation type to filter by. Valid values are 'cd', 'mkdir', 'ls','get','put','stat','rmdir','rm','mv'",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user",
+            "in": "query",
+            "description": "The username to filter by.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AuditLog"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "EndpointInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The ID of the endpoint."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the endpoint."
+          }
+        }
+      },
+      "EndpointCreated": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The ID of the created endpoint."
+          }
+        }
+      },
+      "BlobEndpoint": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID of endpoint."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of endpoint."
+          },
+          "config": {
+            "type": "object",
+            "properties": {
+              "accountKey": {
+                "type": "string",
+                "description": "Azure storage account secret key."
+              },
+              "accountName": {
+                "type": "string",
+                "description": "Azure storage account name."
+              },
+              "containerName": {
+                "type": "string",
+                "description": "Azure storage Blob container."
+              },
+              "isHNS": {
+                "type": "boolean",
+                "description": "Set to true if the Blob container has Hierarchical namespaces enabled."
+              },
+              "useMSI": {
+                "type": "boolean",
+                "description": "Enabled to use the managed service identify associated with the instance to authenticate."
+              },
+              "userAssignedId": {
+                "type": "string",
+                "description": "Client ID of a user assigned managed system identity to use for authentication."
+              },
+              "type": {
+                "type": "string",
+                "description": "Storage endpoint type. Use \"azure\" when connecting to Azure Blob Storage.",
+                "enum": [
+                  "azure"
+                ]
+              }
+            },
+            "description": "Settings specific to the Azure Blob Storage endpoint types."
+          }
+        }
+      },
+      "S3Endpoint": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID of returned endpoint."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of returned endpoint."
+          },
+          "config": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "description": "Storage endpoint type. Use \"aws\" when connecting to Amazon S3.",
+                "enum": [
+                  "aws"
+                ]
+              },
+              "bucketName": {
+                "type": "string",
+                "description": "The Amazon S3 bucket name."
+              },
+              "accessKey": {
+                "type": "string",
+                "description": "The access key to use to authenticate."
+              },
+              "secretKey": {
+                "type": "string",
+                "description": "The secret key to use to authenticate."
+              },
+              "useIamRole": {
+                "type": "boolean",
+                "description": "Enabled to use the IAM role associated with the instance to authenticate."
+              },
+              "SSE": {
+                "type": "string",
+                "description": "The server side encryption type to use when creating objects."
+              },
+              "kmsKeyArn": {
+                "type": "string",
+                "description": "The ARN of the KMS key to use when creating objects."
+              }
+            },
+            "description": "Settings specific to Amazon S3 endpoint types."
+          }
+        }
+      },
+      "GCSEndpoint": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID of returned endpoint."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of returned endpoint."
+          },
+          "config": {
+            "type": "object",
+            "properties": {
+              "bucketName": {
+                "type": "string",
+                "description": "The Google Cloud Storage bucket name."
+              },
+              "credentials": {
+                "type": "string",
+                "description": "A base64 encoded Google Cloud JSON credentials file used to authenticate."
+              },
+              "useVMSA": {
+                "type": "boolean",
+                "description": "Enabled to use service account associated with the instance to authenticate."
+              },
+              "type": {
+                "type": "string",
+                "description": "Storage endpoint type. Use \"gcp\" when connecting to Google Cloud Storage.",
+                "enum": [
+                  "gcp"
+                ]
+              }
+            },
+            "description": "Settings specific to the Google Cloud Storage endpoint types."
+          }
+        }
+      },
+      "UserInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID of returned user."
+          },
+          "username": {
+            "type": "string",
+            "description": "Username"
+          },
+          "endpointName": {
+            "type": "string",
+            "description": "Name of endpoint associated with user."
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Username."
+          },
+          "password": {
+            "type": "string",
+            "description": "Password."
+          },
+          "endpointId": {
+            "type": "integer",
+            "description": "ID of endpoint to associate with user."
+          },
+          "email": {
+            "type": "string",
+            "description": "The email address used for password reset and welcome emails."
+          },
+          "disabled": {
+            "type": "boolean",
+            "description": "Password authentication disabled."
+          },
+          "home": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "Path of user home directory."
+              },
+              "sub": {
+                "type": "boolean",
+                "description": "Recursively apply permissions to all sub-folders."
+              },
+              "grants": {
+                "type": "string",
+                "description": "Specifies permission level granted on home directory. Allowed values are 'list', 'read', 'write', 'full'."
+              }
+            },
+            "description": "Specify path, and permission level of user home directory"
+          },
+          "permissions": {
+            "type": "array",
+            "description": "Additional folder permissions assigned to the user.",
+            "items": {
+              "$ref": "#/components/schemas/Permission"
+            }
+          },
+          "whitelist": {
+            "type": "array",
+            "description": "IP addresses which are allowed to connect as this user.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mfaRequired": {
+            "type": "boolean",
+            "description": "Require multi-factor authentication to be set up before allowing user to log in."
+          },
+          "ldap": {
+            "type": "boolean",
+            "description": "Indicates that this user should be authneticated using LDAP."
+          },
+          "expires": {
+            "type": "string",
+            "description": "A timestamp in ISO 8601 format indicating when the users account should no longer be accessible."
+          },
+          "ftpDisabled": {
+            "type": "boolean",
+            "description": "Disable FTP protocol for this user."
+          }
+        }
+      },
+      "UserId": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "User ID."
+          }
+        }
+      },
+      "UserDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "User ID."
+          },
+          "username": {
+            "type": "string",
+            "description": "Username."
+          },
+          "endpointId": {
+            "type": "integer",
+            "description": "Endpoint ID associated with user."
+          },
+          "disabled": {
+            "type": "boolean",
+            "description": "Password authentication disabled."
+          },
+          "home": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "Path of user home directory."
+              },
+              "sub": {
+                "type": "boolean",
+                "description": "Recursively apply permissions to all sub-folders."
+              },
+              "grants": {
+                "type": "string",
+                "description": "Specifies permission level granted on home directory. Allowed values are 'list', 'read', 'write', 'full'."
+              }
+            },
+            "description": "Specify path, and permission level of user home directory"
+          },
+          "permissions": {
+            "type": "array",
+            "description": "Additional folder permissions assigned to the user.",
+            "items": {
+              "$ref": "#/components/schemas/Permission"
+            }
+          },
+          "keys": {
+            "type": "array",
+            "description": "Keys associated with this user.",
+            "items": {
+              "$ref": "#/components/schemas/KeyInfo"
+            }
+          },
+          "whitelist": {
+            "type": "array",
+            "description": "IP addresses which are allowed to connect as this user.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mfaRequired": {
+            "type": "boolean",
+            "description": "Require multi-factor authentication to be set up before allowing user to log in."
+          },
+          "ldap": {
+            "type": "boolean",
+            "description": "Indicates that this user should be authneticated using LDAP."
+          },
+          "expires": {
+            "type": "string",
+            "description": "A timestamp in ISO 8601 format indicating when the users account should no longer be accessible."
+          },
+          "otpEnabled": {
+            "type": "boolean",
+            "description": "Indicates that the user has configured a OTP device."
+          }
+        }
+      },
+      "Permission": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The path of the folder the permission is applied to."
+          },
+          "sub": {
+            "type": "boolean",
+            "description": "Enable to recursively apply permissions to all sub-folders."
+          },
+          "grants": {
+            "type": "string",
+            "description": "Specifies the permission level granted on the path.",
+            "enum": [
+              "list",
+              "read",
+              "write",
+              "full"
+            ]
+          },
+          "targetPath": {
+            "type": "string",
+            "description": "When a target path is specified, any operations on the path of the permission folder are aliased to the target path, which can be on a different storage endpoint."
+          },
+          "endpointId": {
+            "type": "integer",
+            "description": "Required when target path is specified. The endpoint ID of storage endpoint to which the target path is aliased."
+          }
+        }
+      },
+      "KeyInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Key ID."
+          },
+          "fingerprint": {
+            "type": "string",
+            "description": "MD5 key fingerprint."
+          },
+          "keyData": {
+            "type": "string",
+            "description": "The public key associated with the key pair."
+          },
+          "title": {
+            "type": "string",
+            "description": "A title to display for the key."
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "A UTC timestamp of when the key was created."
+          }
+        }
+      },
+      "Key": {
+        "type": "object",
+        "properties": {
+          "keyData": {
+            "type": "string",
+            "description": "Contents of key file to import. Use either keyData or create."
+          },
+          "create": {
+            "type": "boolean",
+            "description": "Create and return a new key. Use either keyData or create.",
+            "default": false
+          },
+          "title": {
+            "type": "string",
+            "description": "A title to display for the key."
+          }
+        }
+      },
+      "KeyData": {
+        "type": "string",
+        "description": "Contents of created key file."
+      },
+      "GroupInfo": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Group ID."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the group."
+          },
+          "members": {
+            "type": "integer",
+            "description": "Number of members in the group."
+          }
+        }
+      },
+      "Group": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The group ID."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the group."
+          },
+          "members": {
+            "type": "array",
+            "description": "Usernames of members in the group.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "permissions": {
+            "type": "array",
+            "description": "Folder permissions assigned to the group.",
+            "items": {
+              "$ref": "#/components/schemas/Permission"
+            }
+          }
+        }
+      },
+      "GroupCreated": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "The ID of the created group."
+          }
+        }
+      },
+      "PermissionOverview": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "The path of the folder permission."
+          },
+          "count": {
+            "type": "integer",
+            "description": "The number of sources applying permissions to this path."
+          }
+        }
+      },
+      "PermissionDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "grants": {
+            "type": "string",
+            "description": "Specifies the permission level granted on the path.",
+            "enum": [
+              "list",
+              "read",
+              "write",
+              "full"
+            ]
+          },
+          "sub": {
+            "type": "boolean",
+            "description": "Enable to recursively apply permissions to all sub-folders."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the principal this permission is applied to."
+          },
+          "type": {
+            "type": "string",
+            "description": "Indicates if the principal is a user or group."
+          }
+        }
+      },
+      "AuditLog": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "description": "The time the event occurred."
+          },
+          "path": {
+            "type": "string",
+            "description": "The path of object affected."
+          },
+          "user": {
+            "type": "string",
+            "description": "The user invoking the operation."
+          },
+          "operation": {
+            "type": "string",
+            "description": "The type of operation invoked."
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Human readable description of the error."
+          },
+          "fields": {
+            "type": "array",
+            "description": "A list of fields that failed validation.",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "api_key": {
+        "type": "apiKey",
+        "description": "After registering an administrator account, go to the settings page to create a API key. Include this token in all calls to the API.\n\n Example:\n\n `curl http://sftp.example.com/users/ -H \"filemage-api-token: 43fb7437e3f231e481b262ca6d4de0c0\"`",
+        "name": "filemage-api-token",
+        "in": "header"
+      }
+    }
+  }
+}
