@@ -93,7 +93,7 @@ func NewConfiguration() *Configuration {
 		Debug:            false,
 		Servers:          ServerConfigurations{
 			{
-				URL: "https://filemage.ppfa.org:8443",
+				URL: "https://sftp.example.com",
 				Description: "No description provided",
 			},
 		},

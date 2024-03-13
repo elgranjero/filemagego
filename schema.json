@@ -11,7 +11,7 @@
   },
   "servers": [
     {
-      "url": "https://filemage.ppfa.org:8443/"
+      "url": "https://sftp.example.com/"
     }
   ],
   "tags": [

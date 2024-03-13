@@ -1,6 +1,6 @@
 # EndpointsAPI
 
-All URIs are relative to *https://filemage.ppfa.org:8443*
+All URIs are relative to *https://sftp.example.com*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------

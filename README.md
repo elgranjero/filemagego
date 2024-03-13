@@ -77,7 +77,7 @@ ctx = context.WithValue(context.Background(), filemagego.ContextOperationServerV
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *https://filemage.ppfa.org:8443*
+All URIs are relative to *https://sftp.example.com*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------

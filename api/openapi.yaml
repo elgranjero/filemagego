@@ -12,7 +12,7 @@ externalDocs:
   description: Find out more about FileMage Gateway
   url: https://docs.filemage.io
 servers:
-- url: https://filemage.ppfa.org:8443/
+- url: https://sftp.example.com/
 tags:
 - description: Create and manage storage endpoints.
   name: Endpoints
