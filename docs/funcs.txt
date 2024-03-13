@@ -1,0 +1,197 @@
+package filemagego // import "github.com/elgranjero/filemagego"
+
+var JsonCheck = regexp.MustCompile(`(?i:(?:application|text)/(?:[^;]+\+)?json)`) ...
+var ContextAPIKeys = contextKey("apiKeys") ...
+func CacheExpires(r *http.Response) time.Time
+func IsNil(i interface{}) bool
+func PtrBool(v bool) *bool
+func PtrFloat32(v float32) *float32
+func PtrFloat64(v float64) *float64
+func PtrInt(v int) *int
+func PtrInt32(v int32) *int32
+func PtrInt64(v int64) *int64
+func PtrString(v string) *string
+func PtrTime(v time.Time) *time.Time
+type APIClient struct{ ... }
+    func NewAPIClient(cfg *Configuration) *APIClient
+type APIKey struct{ ... }
+type APIResponse struct{ ... }
+    func NewAPIResponse(r *http.Response) *APIResponse
+    func NewAPIResponseWithError(errorMessage string) *APIResponse
+type ApiCreatUserRequest struct{ ... }
+type ApiCreateEndpointRequest struct{ ... }
+type ApiCreateGroupRequest struct{ ... }
+type ApiCreateKeyRequest struct{ ... }
+type ApiDeleteEndpointRequest struct{ ... }
+type ApiDeleteGroupRequest struct{ ... }
+type ApiDeleteKeyRequest struct{ ... }
+type ApiDeleteUserRequest struct{ ... }
+type ApiDetailPermissionsRequest struct{ ... }
+type ApiGetEndpointRequest struct{ ... }
+type ApiGetGroupRequest struct{ ... }
+type ApiGetUserRequest struct{ ... }
+type ApiListEndpointsRequest struct{ ... }
+type ApiListGroupsRequest struct{ ... }
+type ApiListLogsRequest struct{ ... }
+type ApiListUsersRequest struct{ ... }
+type ApiUpdateEndpointRequest struct{ ... }
+type ApiUpdateGroupRequest struct{ ... }
+type ApiUpdateUserRequest struct{ ... }
+type ApiViewPermissionsRequest struct{ ... }
+type AuditAPI interface{ ... }
+type AuditAPIService service
+type AuditLog struct{ ... }
+    func NewAuditLog() *AuditLog
+    func NewAuditLogWithDefaults() *AuditLog
+type BasicAuth struct{ ... }
+type BlobEndpoint struct{ ... }
+    func NewBlobEndpoint() *BlobEndpoint
+    func NewBlobEndpointWithDefaults() *BlobEndpoint
+type BlobEndpointConfig struct{ ... }
+    func NewBlobEndpointConfig() *BlobEndpointConfig
+    func NewBlobEndpointConfigWithDefaults() *BlobEndpointConfig
+type Configuration struct{ ... }
+    func NewConfiguration() *Configuration
+type CreateEndpointRequest struct{ ... }
+    func BlobEndpointAsCreateEndpointRequest(v *BlobEndpoint) CreateEndpointRequest
+    func GCSEndpointAsCreateEndpointRequest(v *GCSEndpoint) CreateEndpointRequest
+    func S3EndpointAsCreateEndpointRequest(v *S3Endpoint) CreateEndpointRequest
+type EndpointCreated struct{ ... }
+    func NewEndpointCreated() *EndpointCreated
+    func NewEndpointCreatedWithDefaults() *EndpointCreated
+type EndpointInfo struct{ ... }
+    func NewEndpointInfo() *EndpointInfo
+    func NewEndpointInfoWithDefaults() *EndpointInfo
+type EndpointsAPI interface{ ... }
+type EndpointsAPIService service
+type Error struct{ ... }
+    func NewError() *Error
+    func NewErrorWithDefaults() *Error
+type GCSEndpoint struct{ ... }
+    func NewGCSEndpoint() *GCSEndpoint
+    func NewGCSEndpointWithDefaults() *GCSEndpoint
+type GCSEndpointConfig struct{ ... }
+    func NewGCSEndpointConfig() *GCSEndpointConfig
+    func NewGCSEndpointConfigWithDefaults() *GCSEndpointConfig
+type GenericOpenAPIError struct{ ... }
+type Group struct{ ... }
+    func NewGroup() *Group
+    func NewGroupWithDefaults() *Group
+type GroupCreated struct{ ... }
+    func NewGroupCreated() *GroupCreated
+    func NewGroupCreatedWithDefaults() *GroupCreated
+type GroupInfo struct{ ... }
+    func NewGroupInfo() *GroupInfo
+    func NewGroupInfoWithDefaults() *GroupInfo
+type GroupsAPI interface{ ... }
+type GroupsAPIService service
+type Key struct{ ... }
+    func NewKey() *Key
+    func NewKeyWithDefaults() *Key
+type KeyInfo struct{ ... }
+    func NewKeyInfo() *KeyInfo
+    func NewKeyInfoWithDefaults() *KeyInfo
+type KeysAPI interface{ ... }
+type KeysAPIService service
+type MappedNullable interface{ ... }
+type NullableAuditLog struct{ ... }
+    func NewNullableAuditLog(val *AuditLog) *NullableAuditLog
+type NullableBlobEndpoint struct{ ... }
+    func NewNullableBlobEndpoint(val *BlobEndpoint) *NullableBlobEndpoint
+type NullableBlobEndpointConfig struct{ ... }
+    func NewNullableBlobEndpointConfig(val *BlobEndpointConfig) *NullableBlobEndpointConfig
+type NullableBool struct{ ... }
+    func NewNullableBool(val *bool) *NullableBool
+type NullableCreateEndpointRequest struct{ ... }
+    func NewNullableCreateEndpointRequest(val *CreateEndpointRequest) *NullableCreateEndpointRequest
+type NullableEndpointCreated struct{ ... }
+    func NewNullableEndpointCreated(val *EndpointCreated) *NullableEndpointCreated
+type NullableEndpointInfo struct{ ... }
+    func NewNullableEndpointInfo(val *EndpointInfo) *NullableEndpointInfo
+type NullableError struct{ ... }
+    func NewNullableError(val *Error) *NullableError
+type NullableFloat32 struct{ ... }
+    func NewNullableFloat32(val *float32) *NullableFloat32
+type NullableFloat64 struct{ ... }
+    func NewNullableFloat64(val *float64) *NullableFloat64
+type NullableGCSEndpoint struct{ ... }
+    func NewNullableGCSEndpoint(val *GCSEndpoint) *NullableGCSEndpoint
+type NullableGCSEndpointConfig struct{ ... }
+    func NewNullableGCSEndpointConfig(val *GCSEndpointConfig) *NullableGCSEndpointConfig
+type NullableGroup struct{ ... }
+    func NewNullableGroup(val *Group) *NullableGroup
+type NullableGroupCreated struct{ ... }
+    func NewNullableGroupCreated(val *GroupCreated) *NullableGroupCreated
+type NullableGroupInfo struct{ ... }
+    func NewNullableGroupInfo(val *GroupInfo) *NullableGroupInfo
+type NullableInt struct{ ... }
+    func NewNullableInt(val *int) *NullableInt
+type NullableInt32 struct{ ... }
+    func NewNullableInt32(val *int32) *NullableInt32
+type NullableInt64 struct{ ... }
+    func NewNullableInt64(val *int64) *NullableInt64
+type NullableKey struct{ ... }
+    func NewNullableKey(val *Key) *NullableKey
+type NullableKeyInfo struct{ ... }
+    func NewNullableKeyInfo(val *KeyInfo) *NullableKeyInfo
+type NullablePermission struct{ ... }
+    func NewNullablePermission(val *Permission) *NullablePermission
+type NullablePermissionDetail struct{ ... }
+    func NewNullablePermissionDetail(val *PermissionDetail) *NullablePermissionDetail
+type NullablePermissionOverview struct{ ... }
+    func NewNullablePermissionOverview(val *PermissionOverview) *NullablePermissionOverview
+type NullableS3Endpoint struct{ ... }
+    func NewNullableS3Endpoint(val *S3Endpoint) *NullableS3Endpoint
+type NullableS3EndpointConfig struct{ ... }
+    func NewNullableS3EndpointConfig(val *S3EndpointConfig) *NullableS3EndpointConfig
+type NullableString struct{ ... }
+    func NewNullableString(val *string) *NullableString
+type NullableTime struct{ ... }
+    func NewNullableTime(val *time.Time) *NullableTime
+type NullableUser struct{ ... }
+    func NewNullableUser(val *User) *NullableUser
+type NullableUserDetail struct{ ... }
+    func NewNullableUserDetail(val *UserDetail) *NullableUserDetail
+type NullableUserHome struct{ ... }
+    func NewNullableUserHome(val *UserHome) *NullableUserHome
+type NullableUserId struct{ ... }
+    func NewNullableUserId(val *UserId) *NullableUserId
+type NullableUserInfo struct{ ... }
+    func NewNullableUserInfo(val *UserInfo) *NullableUserInfo
+type Permission struct{ ... }
+    func NewPermission() *Permission
+    func NewPermissionWithDefaults() *Permission
+type PermissionDetail struct{ ... }
+    func NewPermissionDetail() *PermissionDetail
+    func NewPermissionDetailWithDefaults() *PermissionDetail
+type PermissionOverview struct{ ... }
+    func NewPermissionOverview() *PermissionOverview
+    func NewPermissionOverviewWithDefaults() *PermissionOverview
+type PermissionsAPI interface{ ... }
+type PermissionsAPIService service
+type S3Endpoint struct{ ... }
+    func NewS3Endpoint() *S3Endpoint
+    func NewS3EndpointWithDefaults() *S3Endpoint
+type S3EndpointConfig struct{ ... }
+    func NewS3EndpointConfig() *S3EndpointConfig
+    func NewS3EndpointConfigWithDefaults() *S3EndpointConfig
+type ServerConfiguration struct{ ... }
+type ServerConfigurations []ServerConfiguration
+type ServerVariable struct{ ... }
+type User struct{ ... }
+    func NewUser() *User
+    func NewUserWithDefaults() *User
+type UserDetail struct{ ... }
+    func NewUserDetail() *UserDetail
+    func NewUserDetailWithDefaults() *UserDetail
+type UserHome struct{ ... }
+    func NewUserHome() *UserHome
+    func NewUserHomeWithDefaults() *UserHome
+type UserId struct{ ... }
+    func NewUserId() *UserId
+    func NewUserIdWithDefaults() *UserId
+type UserInfo struct{ ... }
+    func NewUserInfo() *UserInfo
+    func NewUserInfoWithDefaults() *UserInfo
+type UsersAPI interface{ ... }
+type UsersAPIService service
